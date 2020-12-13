@@ -2,16 +2,19 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import logging
 from postgres_adapter import Database
 import json
+import time
 
 db = Database()
 
 def Post_to_db(data):
     if db.connect() == 0:
+        logging.info('POST connect to db')
         db.insert_player(tuple(data.values()))
         db.close_db_connection()       
 
 def Get_from_db(id):
     if db.connect() == 0:
+        logging.info('GET connect to db')
         player_data = db.read_player(id)
         db.close_db_connection() 
         return player_data
@@ -40,10 +43,10 @@ class Server(BaseHTTPRequestHandler):
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
 
 
-def run(server_class=HTTPServer, handler_class=Server, port=8080):
+def run(server_class=HTTPServer, handler_class=Server, port=8000):
     logging.basicConfig(level=logging.INFO)
     server_address = ('', port)
-    #db = Database()
+    time.sleep(10)
     if db.connect() == 0:
         db.create_table_players("players")
         db.close_db_connection()

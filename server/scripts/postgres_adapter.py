@@ -3,7 +3,7 @@ import psycopg2
 
 class Database():
 
-    def __init__(self, database="postgres", user="postgres", password="postgres", host="127.0.0.1", port="5432"):
+    def __init__(self, database="postgres", user="postgres", password="postgres", host="db", port="5432"):
         self.database = database
         self.user = user
         self.password = password
@@ -15,11 +15,11 @@ class Database():
     def connect(self):
         try:
             self.con = psycopg2.connect(
-                database="postgres",
-                user="postgres",
-                password="postgres",
-                host="127.0.0.1",
-                port="5432"  
+                database=self.database,
+                user=self.user,
+                password=self.password,
+                host=self.host,
+                port=self.port  
         )
             self.cursor = self.con.cursor()
             return 0

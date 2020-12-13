@@ -10,16 +10,22 @@ services:
       - POSTGRES_PASSWORD=postgres
     restart: unless-stopped
     
-  server:
-    build: .
-    restart: unless-stopped
-    container_name: kibana
-
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
+  http_server:
+    build: 
+      context: ./server
+    container_name: http_server
+    command: python3 http_server.py
     depends_on:
       - db
+    restart: unless-stopped
 
+  proxy:
+    image: nginx
+    container_name: reverse_proxy
+    ports:
+      - 8080:8080
+    volumes:
+      - ./server/nginx_config:/etc/nginx
+    depends_on:
+      - http_server
+    restart: unless-stopped
